@@ -1,0 +1,31 @@
+# Exclude compiled files
+*.a
+*.o
+*.so
+*.dll
+*.exe
+*.lib
+*.obj
+*.out
+*.zip
+
+# Exclude directories
+.vs
+bin
+out
+venv
+build
+
+# Exclude log files
+test_log.txt
+log.txt
+temp.txt
+CUnit_log.txt
+
+# Exclude bash
+.profile
+.bash_history
+.viminfo
+
+# Exclude Image Files
+*.psd

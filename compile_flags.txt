@@ -1,0 +1,9 @@
+-std=gnu99
+-Iinclude
+-Wall
+-Wextra
+-Werror
+-Wshadow
+-Wpedantic
+-Wconversion
+-Wno-pointer-to-int-cast
