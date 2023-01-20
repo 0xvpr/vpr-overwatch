@@ -28,3 +28,18 @@ optional arguments:
 example:
   ./bin/vpr-overwatch . 'clear && echo testing'
 ```
+
+## Building
+- Linux
+  ```bash
+  make
+  ```
+- Windows (using MinGW)
+  ```bash
+  TOOLCHAIN="mingw-g++-posix-toolchain.cmake" make
+  ```
+- Windows (using MSVC + CMake)
+  ```powershell
+  cmake.exe . -B msvc-build
+  cmake.exe --build msvc-build --config Release
+  ```

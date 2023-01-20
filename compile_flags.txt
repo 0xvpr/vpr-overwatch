@@ -7,4 +7,3 @@
 -Wpedantic
 -Wconversion
 -Wno-pointer-to-int-cast
--fconcepts

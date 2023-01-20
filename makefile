@@ -6,7 +6,11 @@ PREFIX    = /usr/local
 endif
 
 CMAKE       = cmake
+ifeq ($(TOOLCHAIN),)
 TOOLCHAIN   = -DCMAKE_TOOLCHAIN_FILE="g++-gnu-toolchain.cmake"
+else
+TOOLCHAIN   := -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN)
+endif
 
 BIN         = bin
 BUILD       = build
@@ -30,7 +34,6 @@ CMakeLists.txt: $(OBJECTS)
 
 .PHONY: install
 install: $(PROJECT)
-	cp $(BIN)/$(PROJECT) $(BIN)/$(PROJECT)
 	install -d $(PREFIX)/bin
 	install -m 555 $(BIN)/$(PROJECT) $(PREFIX)/bin
 
