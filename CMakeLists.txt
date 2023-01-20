@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.9.0)
 
 # --------------- vpr-overwatch --------------- #
 
-project(vpr-overwatch C)
+project(vpr-overwatch CXX)
 set(TARGET vpr-overwatch)
 set(EXE_NAME vpr-overwatch)
 
@@ -16,7 +16,7 @@ set(SOURCE_DIR src)
 
 set(SOURCES
     # C sources
-    ${SOURCE_DIR}/main.c
+    ${SOURCE_DIR}/main.cpp
     # C includes
 )
 
@@ -44,8 +44,7 @@ set_target_properties(
 
 	#set(TEST_SOURCES
 		## C sources
-		#${TESTS_DIR}/test.c
-		#${SOURCE_DIR}/crt.c
+		#${TESTS_DIR}/test.cpp
 		## C includes
 	#)
 

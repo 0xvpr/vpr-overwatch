@@ -1,4 +1,4 @@
--std=gnu99
+-std=c++2a
 -Iinclude
 -Wall
 -Wextra
@@ -7,3 +7,4 @@
 -Wpedantic
 -Wconversion
 -Wno-pointer-to-int-cast
+-fconcepts

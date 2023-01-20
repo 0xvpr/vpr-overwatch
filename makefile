@@ -6,7 +6,7 @@ PREFIX    = /usr/local
 endif
 
 CMAKE       = cmake
-TOOLCHAIN   = -DCMAKE_TOOLCHAIN_FILE="gcc-gnu-toolchain.cmake"
+TOOLCHAIN   = -DCMAKE_TOOLCHAIN_FILE="g++-gnu-toolchain.cmake"
 
 BIN         = bin
 BUILD       = build
@@ -14,8 +14,8 @@ SOURCE      = src
 INCLUDE     = include
 TEST        = src/test
 
-SOURCES     = $(wildcard $(SOURCE)/*.c)
-OBJECTS     = $(patsubst $(SOURCE)/%.c,$(BUILD)/CMakeFiles/$(PROJECT).dir/$(SOURCE)/%.c.o,$(SOURCES))
+SOURCES     = $(wildcard $(SOURCE)/*.cpp)
+OBJECTS     = $(patsubst $(SOURCE)/%.cpp,$(BUILD)/CMakeFiles/$(PROJECT).dir/$(SOURCE)/%.cpp.o,$(SOURCES))
 
 all: $(PROJECT)
 release: $(PROJECT)
