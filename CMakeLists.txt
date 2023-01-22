@@ -11,13 +11,19 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 
 include_directories(${TARGET} ${CMAKE_SOURCE_DIR}/include)
 set(INCLUDE_DIR include)
-
 set(SOURCE_DIR src)
 
 set(SOURCES
     # C sources
     ${SOURCE_DIR}/main.cpp
+    ${SOURCE_DIR}/parser.cpp
+    ${SOURCE_DIR}/util.cpp
+    ${SOURCE_DIR}/watcher.cpp
     # C includes
+    ${INCLUDE_DIR}/parser.hpp
+    ${INCLUDE_DIR}/types.hpp
+    ${INCLUDE_DIR}/util.hpp
+    ${INCLUDE_DIR}/watcher.hpp
 )
 
 ## Application executable and link dependencies
