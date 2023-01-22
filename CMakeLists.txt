@@ -38,25 +38,30 @@ set_target_properties(
 
 # ------------- TESTING ------------- #
 
-#if (${ARCH} STREQUAL "x64")
-	#project(run-tests C)
-	#set(TESTS run-tests)
+#project(run-tests C)
+#set(TESTS run-tests)
 
-	#include_directories(${TESTS} /usr/local/share/mingw64/include)
-	#include_directories(${TESTS} ${CMAKE_CURRENT_BINARY_DIR}/include)
-	#include_directories(${TESTS} ${CMAKE_CURRENT_BINARY_DIR}src/tests)
+#include_directories(${TESTS} /usr/local/share/mingw64/include)
+#include_directories(${TESTS} ${CMAKE_CURRENT_BINARY_DIR}/include)
+#include_directories(${TESTS} ${CMAKE_CURRENT_BINARY_DIR}src/tests)
 
-	#set(TESTS_DIR src/tests)
+#set(TESTS_DIR src/tests)
 
-	#set(TEST_SOURCES
-		## C sources
-		#${TESTS_DIR}/test.cpp
-		## C includes
-	#)
+#set(SOURCES
+    ## C sources
+    #${SOURCE_DIR}/main.cpp
+    #${SOURCE_DIR}/parser.cpp
+    #${SOURCE_DIR}/util.cpp
+    #${SOURCE_DIR}/watcher.cpp
+    ## C includes
+    #${INCLUDE_DIR}/parser.hpp
+    #${INCLUDE_DIR}/types.hpp
+    #${INCLUDE_DIR}/util.hpp
+    #${INCLUDE_DIR}/watcher.hpp
+#)
 
-	#add_executable(${TESTS} ${TEST_SOURCES}) 
+#add_executable(${TESTS} ${TEST_SOURCES}) 
 
-	#target_link_directories(${TESTS} PRIVATE /usr/local/share/mingw64/lib)
+#target_link_directories(${TESTS} PRIVATE /usr/local/share/mingw64/lib)
 
-	#target_link_libraries(${TESTS} cunit)
-#endif()
+#target_link_libraries(${TESTS} cunit)

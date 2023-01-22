@@ -13,16 +13,16 @@ types::parsedargs_t parse_args(int argc, char** __restrict argv) {
         util::usage(parsedArgs.program_name, "Positional arguments or explicit parser_flags required", types::errcodes::missing_arguments);
     }
 
-    int i = 0;
+    auto i = [&argv, &parsedArgs]() -> int {
+        if (argv[1][0] != '-' && argv[2][0] != '-') {
+            snprintf(parsedArgs.filepath, sizeof(parsedArgs.filepath)-1, "%s", argv[1]);
+            snprintf(parsedArgs.command, sizeof(parsedArgs.command)-1, "%s", argv[2]);
 
-    if (argv[1][0] != '-' && argv[2][0] != '-') {
-        snprintf(parsedArgs.filepath, sizeof(parsedArgs.filepath)-1, "%s", argv[1]);
-        snprintf(parsedArgs.command, sizeof(parsedArgs.command)-1, "%s", argv[2]);
-
-        i = 3;
-    } else {
-        i = 1;
-    }
+            return 3;
+        } else {
+            return 1;
+        }
+    }();
 
     while (i < argc) {
         switch (argv[i][0])
