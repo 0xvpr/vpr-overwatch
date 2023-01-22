@@ -7,7 +7,7 @@ endif
 
 CMAKE       = cmake
 ifeq ($(TOOLCHAIN),)
-TOOLCHAIN   = -DCMAKE_TOOLCHAIN_FILE="g++-gnu-toolchain.cmake"
+TOOLCHAIN   = -DCMAKE_TOOLCHAIN_FILE="toolchain-g++-gnu.cmake"
 else
 TOOLCHAIN   := -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN)
 endif

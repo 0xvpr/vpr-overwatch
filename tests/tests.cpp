@@ -1,4 +1,7 @@
 #include "tests.hpp"
+#include "watcher_test.hpp"
+#include "parser_test.hpp"
+#include "util_test.hpp"
 
 #include <iostream>
 
