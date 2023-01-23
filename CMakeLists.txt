@@ -38,30 +38,33 @@ set_target_properties(
 
 # ------------- TESTING ------------- #
 
-#project(run-tests C)
-#set(TESTS run-tests)
+project(run-tests CXX)
+set(TEST_TARGET run-tests)
 
-#include_directories(${TESTS} /usr/local/share/mingw64/include)
-#include_directories(${TESTS} ${CMAKE_CURRENT_BINARY_DIR}/include)
-#include_directories(${TESTS} ${CMAKE_CURRENT_BINARY_DIR}src/tests)
+include_directories(${TESTS} ${CMAKE_CURRENT_BINARY_DIR}/include)
+include_directories(${TESTS} ${CMAKE_CURRENT_BINARY_DIR}/tests)
 
-#set(TESTS_DIR src/tests)
+set(TEST_DIR tests)
 
-#set(SOURCES
-    ## C sources
-    #${SOURCE_DIR}/main.cpp
-    #${SOURCE_DIR}/parser.cpp
-    #${SOURCE_DIR}/util.cpp
-    #${SOURCE_DIR}/watcher.cpp
-    ## C includes
-    #${INCLUDE_DIR}/parser.hpp
-    #${INCLUDE_DIR}/types.hpp
-    #${INCLUDE_DIR}/util.hpp
-    #${INCLUDE_DIR}/watcher.hpp
-#)
+set(TEST_SOURCES
+    # CXX test sources
+    ${TEST_DIR}/test.cpp
+    ${TEST_DIR}/parser_test.cpp
+    ${TEST_DIR}/util_test.cpp
+    ${TEST_DIR}/watcher_test.cpp
+    # CXX test includes
+    ${TEST_DIR}/parser_test.hpp
+    ${TEST_DIR}/watcher_test.hpp
+    ${TEST_DIR}/util_test.hpp
+    # CXX sources
+    ${SOURCE_DIR}/parser.cpp
+    ${SOURCE_DIR}/util.cpp
+    ${SOURCE_DIR}/watcher.cpp
+    # CXX includes
+    ${INCLUDE_DIR}/parser.hpp
+    ${INCLUDE_DIR}/types.hpp
+    ${INCLUDE_DIR}/util.hpp
+    ${INCLUDE_DIR}/watcher.hpp
+)
 
-#add_executable(${TESTS} ${TEST_SOURCES}) 
-
-#target_link_directories(${TESTS} PRIVATE /usr/local/share/mingw64/lib)
-
-#target_link_libraries(${TESTS} cunit)
+add_executable(${TEST_TARGET} ${TEST_SOURCES}) 
