@@ -14,7 +14,7 @@ int parser_test::correct_positional_arguments() {
         return test_types::return_codes::failed;
     }
 
-    if (parsed_args.no_initial_exec == true) {
+    if (parsed_args.initial_exec == true) {
         return test_types::return_codes::failed;
     }
 
