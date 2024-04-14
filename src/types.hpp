@@ -40,11 +40,6 @@ typedef struct parsed_args {
 } parsed_args, parsed_args_t;
 
 typedef struct file_info {
-    explicit file_info(filetime_t last_write_time, const std::string& filepath_in) noexcept
-      : last_modified(last_write_time)
-      , filepath{filepath_in}
-    {}
-
     filetime_t  last_modified;
     std::string filepath;
 } file_info, file_info_t;
