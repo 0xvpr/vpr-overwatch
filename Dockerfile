@@ -40,6 +40,6 @@ RUN chsh -s /bin/zsh $(whoami)
 ENV HOME=/home/root
 WORKDIR /var/opt/vpr-overwatch-dev
 COPY src src
-COPY tests tests
+COPY ut ut 
 COPY makefile makefile
 COPY CMakeLists.txt CMakeLists.txt
