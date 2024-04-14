@@ -31,7 +31,6 @@ int main(int argc, char** argv) {
     auto files = util::get_files(args);
     while (true) {
         watch_files(files, args);
-
         std::this_thread::sleep_for( args.frequency_us ); // default 2 ms
     }
 
