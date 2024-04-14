@@ -30,7 +30,7 @@ typedef struct err {
 } err, err_t;
 
 typedef struct parsed_args {
-    bool                        no_initial_exec;
+    bool                        initial_exec;
     bool                        recursive;
     int32_t                     verbosity;
     microseconds_t              frequency_us;

@@ -8,10 +8,10 @@
 
 parser::parser(int argc, char** argv, types::err_t& err) noexcept
   : parsed_args_{
-    .no_initial_exec=false,
-    .recursive = false,
-    .verbosity = 0,
-    .frequency_us{},
+    .initial_exec=false,
+    .recursive=false,
+    .verbosity=0,
+    .frequency_us{types::microseconds_t{200}},
     .command{},
     .program_name{argv[0]},
     .filepaths{}
@@ -55,8 +55,8 @@ parser::parser(int argc, char** argv, types::err_t& err) noexcept
 }
 
 types::errcodes parser::set_flag(const std::string& flag) noexcept {
-    if (flag == "-n") {
-        parsed_args_.no_initial_exec = true;
+    if (flag == "-i") {
+        parsed_args_.initial_exec = true;
     } else if (flag == "-r") {
         parsed_args_.recursive = true;
     } else if (flag == "-v") {
