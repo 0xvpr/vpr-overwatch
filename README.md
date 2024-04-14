@@ -4,23 +4,23 @@ file(s) is/are modified.
 
 ## Usage
 ```bash
-Error message: Positional arguments or explicit flags required.
+Error message: Missing arguments..
 
-Usage: ./bin/vpr-overwatch -f <target_file> -c 'command to execute' [ optional arguments> ]
+Usage: ./bin/vpr-overwatch /path/to/file1 /path/to/fileN -c 'command to execute' [ <optional arguments> ]
  or
-Usage: /path/to/files 'command to execute'
+Usage: ./bin/vpr-overwatch /path/to/file 'command to execute'
 
 optional positional arguments:
-  path/to/files, command
+  /path/to/file(s), 'command'
 
 required arguments:
   -c            specify a command to be executed
   -f            specify a single file to monitor
 
 optional arguments:
-  -n            only execute the specified command if a modification is detected
+  -i            execute at least once initially, before modification is detected
   -r            recurse through a given directory
-  -t            time interval in microseconds
+  -f            specify frequency in microseconds
   -v            enable minimum verbosity
   -vv           enable increased verbosity
   -vvv          enable maximum verbosity
