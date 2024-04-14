@@ -8,6 +8,6 @@
 /**
  * TODO
 **/
-void watch_files(std::vector<types::fileinfo_t>& files, const types::parsedargs_t& parsedArgs);
+void watch_files(std::vector<types::file_info_t>& files, const types::parsed_args_t& parsed_args);
 
 #endif // WATCHER_HEADER

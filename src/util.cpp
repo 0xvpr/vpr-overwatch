@@ -1,8 +1,9 @@
 #include <iostream>
 
+#include "types.hpp"
 #include "util.hpp"
 
-void util::usage(const char * const __restrict program, const char* const __restrict msg, auto code) {
+void util::usage(const char * const __restrict program, const char* const __restrict msg, types::errcodes code) {
     std::cerr << "Error message: " << msg << ".\n"
               << "\n"
               << "Usage: " << program << " -f <target_file> -c 'command to execute' [ optional arguments> ]\n"
@@ -30,50 +31,83 @@ void util::usage(const char * const __restrict program, const char* const __rest
     exit(code);
 }
 
-std::vector<types::fileinfo_t> util::get_files(const types::parsedargs_t& parsedArgs) {
-    std::vector<types::fileinfo_t> files{};
+void util::usage(const char * const __restrict program, const types::err_t& err) {
+    std::cerr << "Error message: " << err.msg << ".\n"
+              << "\n"
+              << "Usage: " << program << " -f <target_file> -c 'command to execute' [ optional arguments> ]\n"
+              << " or \n"
+              << "Usage: /path/to/files 'command to execute'\n"
+              << "\n"
+              << "optional positional arguments:\n"
+              << "  path/to/files, command\n"
+              << "\n"
+              << "required arguments:\n"
+              << "  -c\t\tspecify a command to be executed\n"
+              << "  -f\t\tspecify a single file to monitor\n"
+              << "\n"
+              << "optional arguments:\n"
+              << "  -n\t\tonly execute the specified command if a modification is detected\n"
+              << "  -r\t\trecurse through a given directory\n"
+              << "  -t\t\ttime interval in microseconds\n"
+              << "  -v\t\tenable minimum verbosity\n"
+              << "  -vv\t\tenable increased verbosity\n"
+              << "  -vvv\t\tenable maximum verbosity\n"
+              << "\n"
+              << "example:\n"
+              << "  " << program << " . 'clear && echo testing'\n";
 
-    if (std::filesystem::is_directory(parsedArgs.filepath) && parsedArgs.recursive) {
-        const std::filesystem::path p(parsedArgs.filepath);
-        std::filesystem::recursive_directory_iterator it(p);
+    exit(err.code);
+}
 
-        for (const auto& file : it) {
-            const std::filesystem::path f(file);
+std::vector<types::file_info_t> util::get_files(const types::parsed_args_t& parsed_args) {
+    std::vector<types::file_info_t> files{};
+    if (parsed_args.recursive) {
+        files.reserve(2048);
+    }
 
-            try {
-                if (std::filesystem::is_regular_file(f)) {
-                    auto const relative_path = std::move(f.string().c_str());
-                    files.emplace_back(types::fileinfo_t(std::filesystem::last_write_time(f), relative_path));
+    for (const auto& filepath : parsed_args.filepaths) {
+        if (std::filesystem::is_directory(filepath) && parsed_args.recursive) {
+            const std::filesystem::path p(filepath);
+            std::filesystem::recursive_directory_iterator it(p);
+
+            for (const auto& file : it) {
+                const std::filesystem::path f(file);
+
+                try {
+                    if (std::filesystem::is_regular_file(f)) {
+                        //auto const relative_path = std::move(f.string());
+                        files.emplace_back(std::filesystem::last_write_time(f), f.string());
+                    }
+                } catch (...) {
+                    // TODO log error
                 }
+            }
+        } else if (std::filesystem::is_directory(filepath)) {
+            std::filesystem::directory_iterator it(filepath);
+
+            for (const auto& file : it) {
+                const std::filesystem::path f(file);
+
+                try {
+                    if (std::filesystem::is_regular_file(f)) {
+                        //auto const relative_path = std::move(f.string());
+                        files.emplace_back(std::filesystem::last_write_time(f), f.string());
+                    }
+                } catch (...) {
+                    // TODO log error
+                }
+            }
+        } else if (std::filesystem::is_regular_file(filepath)) {
+            const std::filesystem::path f(filepath);
+            
+            try {
+                files.emplace_back(std::filesystem::last_write_time(f), f.string());
             } catch (...) {
                 // TODO log error
             }
+        } else {
+            util::usage(parsed_args.program_name.c_str(), "Please specify a valid file or directory", types::errcodes::invalid_arguments);
         }
-    } else if (std::filesystem::is_directory(parsedArgs.filepath)) {
-        std::filesystem::directory_iterator it(parsedArgs.filepath);
-
-        for (const auto& file : it) {
-            const std::filesystem::path f(file);
-
-            try {
-                if (std::filesystem::is_regular_file(f)) {
-                    auto const relative_path = std::move(f.string().c_str());
-                    files.emplace_back(types::fileinfo_t(std::filesystem::last_write_time(f), relative_path));
-                }
-            } catch (...) {
-                // TODO log error
-            }
-        }
-    } else if (std::filesystem::is_regular_file(parsedArgs.filepath)) {
-        const std::filesystem::path f(parsedArgs.filepath);
-        
-        try {
-            files.emplace_back(types::fileinfo_t(std::filesystem::last_write_time(f), parsedArgs.filepath));
-        } catch (...) {
-            // TODO log error
-        }
-    } else {
-        util::usage(parsedArgs.program_name, "Please specify a valid file or directory", 2);
     }
 
     return files;

@@ -34,12 +34,9 @@ example:
   ```bash
   make
   ```
-- Windows (using MinGW)
-  ```bash
-  TOOLCHAIN="mingw-g++-posix-toolchain.cmake" make
-  ```
+
 - Windows (using MSVC + CMake)
   ```powershell
-  cmake.exe . -B msvc-build
-  cmake.exe --build msvc-build --config Release
+  cmake.exe . -B build
+  cmake.exe --build build --config Release
   ```

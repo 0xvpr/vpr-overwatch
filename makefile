@@ -1,16 +1,11 @@
 PROJECT     = vpr-overwatch
-VERSION     = 0.1
+VERSION     = 1.0.0
 
 ifeq ($(PREFIX),)
-PREFIX    = /usr/local
+PREFIX      = /usr/local
 endif
 
 CMAKE       = cmake
-ifeq ($(TOOLCHAIN),)
-TOOLCHAIN   = -DCMAKE_TOOLCHAIN_FILE="toolchain-g++-gnu.cmake"
-else
-TOOLCHAIN   := -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN)
-endif
 
 BIN         = bin
 BUILD       = build
@@ -25,7 +20,7 @@ all: $(PROJECT)
 release: $(PROJECT)
 
 $(PROJECT):
-	$(CMAKE) -B $(BUILD) $(TOOLCHAIN)
+	$(CMAKE) -B $(BUILD)
 	$(CMAKE) --build $(BUILD) $(CMAKE_FLAGS)
 
 .PHONY: $(OBJECTS)
@@ -35,7 +30,7 @@ CMakeLists.txt: $(OBJECTS)
 .PHONY: install
 install: $(PROJECT)
 	install -d $(PREFIX)/bin
-	install -m 555 $(BIN)/$(PROJECT) $(PREFIX)/bin
+	install -m 551 $(BIN)/$(PROJECT) $(PREFIX)/bin
 
 .PHONY: release
 release:

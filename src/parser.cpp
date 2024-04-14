@@ -1,101 +1,91 @@
 #include <iostream>
 #include <cstdio>
+#include <cmath>
 
 #include "parser.hpp"
 #include "types.hpp"
 #include "util.hpp"
 
-types::parsedargs_t parse_args(int argc, char** __restrict argv) {
-    types::parsedargs_t parsedArgs{};
-    for (unsigned i = 0; (*parsedArgs.program_name = *(argv[0]+i)) && i < sizeof(parsedArgs.program_name); ++i);
-
+parser::parser(int argc, char** argv, types::err_t& err) noexcept
+  : parsed_args_{
+    .no_initial_exec=false,
+    .recursive = false,
+    .verbosity = 0,
+    .frequency_us{},
+    .command{},
+    .program_name{argv[0]},
+    .filepaths{}
+  }
+{
     if (argc < 3) {
-        util::usage(parsedArgs.program_name, "Positional arguments or explicit parser_flags required", types::errcodes::missing_arguments);
+        err.code = types::missing_arguments;
+        err.msg = types::error_messages[err.code];
+
+        return;
     }
 
-    auto i = [&argv, &parsedArgs]() -> int {
-        if (argv[1][0] != '-' && argv[2][0] != '-') {
-            snprintf(parsedArgs.filepath, sizeof(parsedArgs.filepath)-1, "%s", argv[1]);
-            snprintf(parsedArgs.command, sizeof(parsedArgs.command)-1, "%s", argv[2]);
+    if (argc == 3) {
+        parsed_args_.filepaths.emplace_back(argv[1]);
+        parsed_args_.command = argv[2];
 
-            return 3;
-        } else {
-            return 1;
-        }
-    }();
+        return;
+    }
 
-    while (i < argc) {
-        switch (argv[i][0])
-        {
-            case '-':
-            {
-                switch (argv[i][1])
-                {
-                    case 'c':
-                    {
-                        if (argv[i][2]) {
-                            snprintf(parsedArgs.command, sizeof(parsedArgs.command)-1, "%s", argv[i]+2);
-                        } else {
-                            snprintf(parsedArgs.command, sizeof(parsedArgs.command)-1, "%s", argv[i+1]);
-                        }
-                        break;
-                    }
-                    case 'f':
-                    {
-                        if (argv[i][2]) {
-                            snprintf(parsedArgs.filepath, sizeof(parsedArgs.filepath)-1, "%s", argv[i]+2);
-                        } else {
-                            snprintf(parsedArgs.filepath, sizeof(parsedArgs.filepath)-1, "%s", argv[i+1]);
-                        }
-                        break;
-                    }
-                    case 'n':
-                    {
-                        parsedArgs.no_initial_exec = true;
-                        break;
-                    }
-                    case 'r':
-                    {
-                        parsedArgs.recursive = true;
-                        break;
-                    }
-                    case 't':
-                    {
-                        uint64_t tmp;
-                        if (argv[i][2]) {
-                            if (sscanf(argv[i]+2, "%lu", &tmp) != 1) {
-                                util::usage(parsedArgs.program_name, "Failed to parse argument", types::errcodes::invalid_arguments);
-                            }
-                        } else {
-                            if (sscanf(argv[i+1], "%lu", &tmp) != 1) {
-                                util::usage(parsedArgs.program_name, "Failed to parse argument", types::errcodes::invalid_arguments);
-                            }
-                            parsedArgs.frequency_us = types::nanoseconds_t{tmp};
-                        }
-                        break;
-                    }
-                    case 'v':
-                    {
-                        parsedArgs.verbosity = 1;
+    types::errcodes error_code = types::errcodes::no_error;
+    for (int arg_index = 1; arg_index < argc; ++arg_index) {
+        std::string arg(argv[arg_index]);
 
-                        if (argv[i][2] != 0 && argv[i][2] == 'v') {
-                            parsedArgs.verbosity = 2;
-                        }
-                        if (argv[i][3] != 0 && argv[i][3] == 'v') {
-                            parsedArgs.verbosity = 3;
-                        }
-                        break;
-                    }
-                    default:
-                    {
-                        util::usage(parsedArgs.program_name, "Unsupported option", types::errcodes::unsupported_arguments);
-                        break;
-                    }
-                }
+        if (arg[0] == '-') {
+            if ( (arg_index+1 < argc) && (argv[arg_index+1][0] != '-') ) {
+                error_code = parse_option(arg, argv[++arg_index]);
+            } else {
+                error_code = set_flag(arg);
             }
+        } else {
+            parsed_args_.filepaths.emplace_back(arg);
         }
-        ++i;
+
+        if (error_code) {
+            err.code = error_code;
+            err.msg = types::error_messages[error_code];
+
+            return;
+        }
+    }
+}
+
+types::errcodes parser::set_flag(const std::string& flag) noexcept {
+    if (flag == "-n") {
+        parsed_args_.no_initial_exec = true;
+    } else if (flag == "-r") {
+        parsed_args_.recursive = true;
+    } else if (flag == "-v") {
+        parsed_args_.verbosity = 1;
+    } else if (flag == "-vv") {
+        parsed_args_.verbosity = 2;
+    } else if (flag == "-vvv") {
+        parsed_args_.verbosity = 3;
+    } else {
+        return types::errcodes::unsupported_arguments;
     }
 
-    return parsedArgs;
+    return types::errcodes::no_error;
+}
+
+types::errcodes parser::parse_option(const std::string& option, const std::string& value) noexcept {
+    if (option == "-c") {
+        parsed_args_.command = value;
+    } else if (option == "-f") {
+        std::istringstream iss(value);
+        std::uint64_t us;
+        iss >> us;
+        if (iss.fail()) {
+            return types::errcodes::invalid_arguments;
+        }
+        parsed_args_.frequency_us = types::microseconds_t(us);
+    } else {
+        return types::errcodes::unsupported_arguments;
+    }
+
+    return types::errcodes::no_error;
 }
