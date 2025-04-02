@@ -5,6 +5,10 @@ ifeq ($(PREFIX),)
 PREFIX      = /usr/local
 endif
 
+ifneq ($(USERPROFILE),) # hack fix for windows output directory
+WIN_BIN_PREFX = Debug
+endif
+
 CMAKE       = cmake
 
 BIN         = bin
@@ -14,7 +18,7 @@ SOURCE      = $(PROJECT)
 SOURCES     = $(wildcard $(SOURCE)/*.cpp)
 OBJECTS     = $(patsubst $(SOURCE)/%.cpp,$(BUILD)/CMakeFiles/$(PROJECT).dir/$(SOURCE)/%.cpp.o,$(SOURCES))
 
-TESTS       = $(BIN)/vpr-$(PROJECT)-tests
+TESTS       = $(BIN)/$(WIN_BIN_PREFX)/vpr-$(PROJECT)-tests
 
 all:     $(PROJECT)
 release: $(PROJECT)
