@@ -75,12 +75,20 @@ types::errcodes parser::parse_option(const std::string& option, const std::strin
     if (option == "-c") {
         parsed_args_.command = value;
     } else if (option == "-f") {
-        std::basic_istringstream<char> iss(value);
-        std::uint64_t us;
+        std::uint64_t us{};
+
+#if defined(__clang__) && defined(__apple_build_version__) // alternatively, check for xclang libcpp
+        int success = std::sscanf(value.c_str(),"%lu", &us);
+        if (success != 1) {
+            return types::errcodes::invalid_arguments;
+        }
+#else // but for everyone else, apparently...
+        std::istringstream iss(value);
         iss >> us;
         if (iss.fail()) {
             return types::errcodes::invalid_arguments;
         }
+#endif // defined(__clang__) && defined(__apple_build_version__)
         parsed_args_.frequency_us = types::microseconds_t(us);
     } 
 
