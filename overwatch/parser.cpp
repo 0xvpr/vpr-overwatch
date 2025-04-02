@@ -2,19 +2,20 @@
 #include <cstdio>
 #include <cmath>
 
+#include "constants.hpp"
 #include "parser.hpp"
 #include "types.hpp"
 #include "util.hpp"
 
 parser::parser(int argc, char** argv, types::err_t& err) noexcept
   : parsed_args_{
-    .initial_exec=false,
-    .recursive=false,
-    .verbosity=0,
-    .frequency_us{types::microseconds_t{200}},
-    .command{},
-    .program_name{argv[0]},
-    .filepaths{}
+    .initial_exec = false,
+    .recursive = false,
+    .verbosity = 0,
+    .frequency_us{ types::microseconds_t{constants::default_frequency_us} },
+    .command{ },
+    .program_name{ argv[0] },
+    .filepaths{ }
   }
 {
     if (argc < 3) {
@@ -65,11 +66,9 @@ types::errcodes parser::set_flag(const std::string& flag) noexcept {
         parsed_args_.verbosity = 2;
     } else if (flag == "-vvv") {
         parsed_args_.verbosity = 3;
-    } else {
-        return types::errcodes::unsupported_arguments;
-    }
+    } 
 
-    return types::errcodes::no_error;
+    return types::errcodes::unsupported_arguments;
 }
 
 types::errcodes parser::parse_option(const std::string& option, const std::string& value) noexcept {
@@ -83,9 +82,7 @@ types::errcodes parser::parse_option(const std::string& option, const std::strin
             return types::errcodes::invalid_arguments;
         }
         parsed_args_.frequency_us = types::microseconds_t(us);
-    } else {
-        return types::errcodes::unsupported_arguments;
-    }
+    } 
 
-    return types::errcodes::no_error;
+    return types::errcodes::unsupported_arguments;
 }

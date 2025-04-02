@@ -1,0 +1,16 @@
+name: Run Tests
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  docker_build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build and Run Tests
+        run: make tests
