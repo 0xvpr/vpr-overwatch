@@ -14,15 +14,18 @@ SOURCE      = $(PROJECT)
 SOURCES     = $(wildcard $(SOURCE)/*.cpp)
 OBJECTS     = $(patsubst $(SOURCE)/%.cpp,$(BUILD)/CMakeFiles/$(PROJECT).dir/$(SOURCE)/%.cpp.o,$(SOURCES))
 
-all: $(PROJECT)
+TESTS       = $(BIN)/vpr-$(PROJECT)-tests
+
+all:     $(PROJECT)
 release: $(PROJECT)
-tests: bin/vpr-$(PROJECT)-tests
+tests:   $(TESTS)
 
 $(PROJECT): $(OBJECTS)
 	$(CMAKE) -B $(BUILD)
 	$(CMAKE) --build $(BUILD) $(CMAKE_FLAGS)
 
-bin/vpr-$(PROJECT)-tests: $(PROJECT)
+.PHONY: $(TESTS)
+$(TESTS): $(PROJECT)
 	./$@
 
 .PHONY: $(OBJECTS)

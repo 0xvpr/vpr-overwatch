@@ -75,7 +75,7 @@ types::errcodes parser::parse_option(const std::string& option, const std::strin
     if (option == "-c") {
         parsed_args_.command = value;
     } else if (option == "-f") {
-        std::istringstream iss(value);
+        std::basic_istringstream<char> iss(value);
         std::uint64_t us;
         iss >> us;
         if (iss.fail()) {
