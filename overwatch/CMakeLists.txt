@@ -7,11 +7,17 @@ add_executable(
     watcher.cpp
 )
 
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+        PREFIX vpr-
+)
+
 target_compile_options(
     ${PROJECT_NAME}
     PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Ofast>
             $<$<CXX_COMPILER_ID:GNU>:-fPIE>
-            $<$<CXX_COMPILER_ID:GNU>:-funroll-loops>
+            #$<$<CXX_COMPILER_ID:GNU>:-funroll-loops> # not really used
             $<$<CXX_COMPILER_ID:GNU>:-Wall>
             $<$<CXX_COMPILER_ID:GNU>:-Wextra>
             $<$<CXX_COMPILER_ID:GNU>:-Werror>

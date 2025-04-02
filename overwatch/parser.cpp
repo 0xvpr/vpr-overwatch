@@ -2,19 +2,20 @@
 #include <cstdio>
 #include <cmath>
 
+#include "constants.hpp"
 #include "parser.hpp"
 #include "types.hpp"
 #include "util.hpp"
 
 parser::parser(int argc, char** argv, types::err_t& err) noexcept
   : parsed_args_{
-    .initial_exec=false,
-    .recursive=false,
-    .verbosity=0,
-    .frequency_us{types::microseconds_t{200}},
-    .command{},
-    .program_name{argv[0]},
-    .filepaths{}
+    .initial_exec = false,
+    .recursive = false,
+    .verbosity = 0,
+    .frequency_us{ types::microseconds_t{constants::default_frequency_us} },
+    .command{ },
+    .program_name{ argv[0] },
+    .filepaths{ }
   }
 {
     if (argc < 3) {
@@ -65,27 +66,31 @@ types::errcodes parser::set_flag(const std::string& flag) noexcept {
         parsed_args_.verbosity = 2;
     } else if (flag == "-vvv") {
         parsed_args_.verbosity = 3;
-    } else {
-        return types::errcodes::unsupported_arguments;
-    }
+    } 
 
-    return types::errcodes::no_error;
+    return types::errcodes::unsupported_arguments;
 }
 
 types::errcodes parser::parse_option(const std::string& option, const std::string& value) noexcept {
     if (option == "-c") {
         parsed_args_.command = value;
     } else if (option == "-f") {
+        std::uint64_t us{};
+
+#if defined(__clang__) && defined(__apple_build_version__) // alternatively, check for xclang libcpp
+        int success = std::sscanf(value.c_str(),"%lu", &us);
+        if (success != 1) {
+            return types::errcodes::invalid_arguments;
+        }
+#else // but for everyone else, apparently...
         std::istringstream iss(value);
-        std::uint64_t us;
         iss >> us;
         if (iss.fail()) {
             return types::errcodes::invalid_arguments;
         }
+#endif // defined(__clang__) && defined(__apple_build_version__)
         parsed_args_.frequency_us = types::microseconds_t(us);
-    } else {
-        return types::errcodes::unsupported_arguments;
-    }
+    } 
 
-    return types::errcodes::no_error;
+    return types::errcodes::unsupported_arguments;
 }

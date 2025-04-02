@@ -15,6 +15,7 @@ bin
 out
 venv
 build
+docker-build
 
 # Exclude log files
 test_log.txt
